@@ -1,0 +1,5 @@
+weights/identity_vacancy_geometry_model_2024-02-28_train_lessclasses_skipconnect_hyperparametertuned_geometry_identity_all_p0.25_epoch0.pth filter=lfs diff=lfs merge=lfs -text
+weights/identity_vacancy_geometry_model_2024-02-28_train_lessclasses_skipconnect_hyperparametertuned_geometry_identity_all_p0.25_epoch100.pth filter=lfs diff=lfs merge=lfs -text
+weights/identity_vacancy_geometry_model_2024-03-01_train_lessclasses_skipconnect_hyperparametertuned_geometry_identity_all_g09_300epoch_p01_epoch300.pth filter=lfs diff=lfs merge=lfs -text
+weights/metal_0.5A_allmetal_one3dchannel_16Abox_filter6_epoch6.pth filter=lfs diff=lfs merge=lfs -text
+weights/identity_vacancy_geometry_model_2024-02-07_10e-5lr_g0.9_b100_100epochs_onlyidentity_lessclasses_epoch80.pth filter=lfs diff=lfs merge=lfs -text
