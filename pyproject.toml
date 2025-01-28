@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "allmetal3d"
+version = "0.4.0"
+description = "Predicting metal and water binding sites in proteins using 3DCNNs"
+authors = ["Simon Duerr"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+gradio = "4.20.0"
+pydantic = "2.6.3"
+biopython = "^1.84"
+tabulate = "^0.9.0"
+moleculekit = "1.9.4"
+numpy = "1.26.4"
+scipy = "1.12.0"
+scikit-learn = "1.4.1.post1"
+gradio_molecule3d = "^0.0.4"
+halo = "0.0.31"
+
+[tool.poetry.dev-dependencies]
+
+[tool.poetry.scripts]
+allmetal3d_server = "allmetal3d.command_line:server_cli"
+allmetal3d = "allmetal3d.command_line:cli"
+
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
