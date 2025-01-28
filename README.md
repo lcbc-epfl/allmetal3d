@@ -1,4 +1,4 @@
-# allmetal3d
+# AllMetal3D
 
 Predicting metal and water binding sites in proteins using 3DCNNs
 
