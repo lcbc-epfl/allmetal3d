@@ -28,9 +28,9 @@ home = Path.home()
 
 for id, weight in constants.model_weights.items():
     if not os.path.exists(str(home)+weight):
-        print(id, "weight doesn't exist")
+        print(id, "weight doesn't exist, downloading from HF")
         # download weights from GIT LFS
-        # os.system("wget ...")
+        os.system(f"wget -O {str(home)+weight} {constants.download_weights[id]}")
 
 
 def predict(input_pdb=None, models="all", mode="fast", central_residue="", radius=8, threshold=7, pthreshold=0.25, batch_size=50, output_dir="./") -> tuple[str, str, str, str, dict]:
