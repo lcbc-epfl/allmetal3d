@@ -2,12 +2,9 @@
 
 <!--next-version-placeholder-->
 
-## v0.7.0 (30/1/2025)
-
-- Fix multiprocessing
 
 ## v0.6.0 (30/1/2025)
-
+- Fix multiprocessing
 - Small fixes for weight download
 
 ## v0.5.0 (30/1/2025)
