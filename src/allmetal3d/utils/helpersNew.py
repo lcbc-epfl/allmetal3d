@@ -169,7 +169,7 @@ def compute_average_p(point, cutoff=0.5):
     return p
 
 
-def compute_average_p_fast(point, cutoff=1):
+def compute_average_p_fast(point,cutoff=1):
     """This is a faster approach that uses a KDTree to find the closes gridpoints
     For each point the computation is run on one cpu."""
     p = 0
@@ -184,7 +184,7 @@ def compute_average_p_fast(point, cutoff=1):
 from scipy import ndimage
 
 
-def get_probability_mean(grid, prot_centers, pvalues, implementation="kdtree"):
+def get_probability_mean(grid, prot_centers, pvalues, implementation="multiprocessing"):
     global output_v
     output_v = pvalues
     global prot_v
@@ -195,12 +195,15 @@ def get_probability_mean(grid, prot_centers, pvalues, implementation="kdtree"):
         # p = Pool(cpuCount)
         # results = p.map(compute_average_p, grid)
         results = process_map(compute_average_p, grid, chunksize=cpuCount)
-    else:
+    elif implementation == "multiprocessing":
         global tree
         tree = KDTree(prot_v)
-        #p = Pool(cpuCount)
-        #results = p.map(compute_average_p_fast, grid)
+        p = Pool(cpuCount)
+        results = p.map(compute_average_p_fast, grid)
+    elif implementation == "joblib":
         results = Parallel(n_jobs=cpuCount)(delayed(compute_average_p_fast)(g) for g in grid)
+    else:
+        raise RuntimeError("No backend specified")
 
     return np.array(results)
 

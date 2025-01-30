@@ -84,8 +84,8 @@ def predict_location(
     threshold=7,
     pthreshold=0.10,
     cubefile="prediction.cube",
-    probefile="prediction.pdb"
-    
+    probefile="prediction.pdb",
+    backend="multiprocessing"
 ):
 
     model.eval()
@@ -106,7 +106,7 @@ def predict_location(
 
     grid, box_N = create_grid_fromBB(bb)
 
-    probability_values = get_probability_mean(grid, prot_v, output_v)
+    probability_values = get_probability_mean(grid, prot_v, output_v, implementation=backend)
 
     if cubefile != None:
         cube = write_cubefile(
@@ -152,7 +152,8 @@ def predict_water(
     probefile="water.pdb",
     mode="fast",
     central_residue="",
-    radius=8
+    radius=8,
+    backend="multiprocessing"
 ):
 
     model.eval()
@@ -173,7 +174,7 @@ def predict_water(
 
     grid, box_N = create_grid_fromBB(bb)
 
-    probability_values = get_probability_mean(grid, prot_v, output_v)
+    probability_values = get_probability_mean(grid, prot_v, output_v,implementation=backend)
 
     if cubefile != None:
         cube = write_cubefile(
@@ -299,7 +300,7 @@ def determine_close_residues(pdb, probe, threshold=3.5):
 
   
 
-def predict(pdb, models, pthreshold=0.1, threshold=7, batch_size=20, mode="fast", central_residue=None, radius=8):
+def predict(pdb, models, pthreshold=0.1, threshold=7, batch_size=20, mode="fast", central_residue=None, radius=8, backend="multiprocessing"):
     start_time = time.time()
 
     probefile = os.path.basename(pdb).split(".")[0] + "_metals.pdb"
@@ -319,21 +320,35 @@ def predict(pdb, models, pthreshold=0.1, threshold=7, batch_size=20, mode="fast"
     
     home = Path.home()
 
-    model.load_state_dict(
-        torch.load(
-            str(home)+constants.model_weights['metal']
+    if int(torch.__version__[0])>1:
+        model.load_state_dict(
+            torch.load(
+                str(home)+constants.model_weights['metal'], weights_only=True
+            )
         )
-    )
+    else:
+        model.load_state_dict(
+            torch.load(
+                str(home)+constants.model_weights['metal']
+            )
+        )
 
 
     water_model = WaterModel()
     water_model.to(device)
 
-    water_model.load_state_dict(
-        torch.load(
-            str(home)+constants.model_weights['water']
+    if int(torch.__version__[0])>1:
+        water_model.load_state_dict(
+            torch.load(
+                str(home)+constants.model_weights['water'], weights_only=True
+            )
         )
-    )
+    else:
+        water_model.load_state_dict(
+            torch.load(
+                str(home)+constants.model_weights['water']
+            )
+        )
 
     identity_model = IdentityModel()
 
@@ -342,12 +357,18 @@ def predict(pdb, models, pthreshold=0.1, threshold=7, batch_size=20, mode="fast"
     identity_model.to(device)
 
 
-
-    identity_model.load_state_dict(
-        torch.load(
-            str(home)+constants.model_weights['identity']
-           )
-    )
+    if int(torch.__version__[0])>1:
+        identity_model.load_state_dict(
+            torch.load(
+                str(home)+constants.model_weights['identity'], weights_only=True
+            )
+        )
+    else:
+        identity_model.load_state_dict(
+            torch.load(
+                str(home)+constants.model_weights['identity']
+            )
+        )
 
 
     # step0 voxelize
@@ -372,7 +393,8 @@ def predict(pdb, models, pthreshold=0.1, threshold=7, batch_size=20, mode="fast"
                 threshold=threshold,
                 pthreshold=pthreshold,
                 probefile=probefile,
-                cubefile=cubefile, 
+                cubefile=cubefile,
+                backend=backend 
         )
         # step 3 
         # predict metal identity
@@ -414,7 +436,8 @@ def predict(pdb, models, pthreshold=0.1, threshold=7, batch_size=20, mode="fast"
                 cubefile=cubefile_water, 
                 mode=mode, 
                 central_residue=central_residue,
-                radius=radius
+                radius=radius,
+                backend=backend
         )
         gradio_probefile_water = gr.File(probefile_water, visible=True)
         gradio_cubefile_water = gr.File(cubefile_water,visible=True)
@@ -431,7 +454,7 @@ def predict(pdb, models, pthreshold=0.1, threshold=7, batch_size=20, mode="fast"
 
 
 
-def predict_cli(pdb, models, pthreshold=0.1, threshold=7, batch_size=20, mode="fast", central_residue=None, radius=8, output_dir = "."):
+def predict_cli(pdb, models, pthreshold=0.1, threshold=7, batch_size=20, mode="fast", central_residue=None, radius=8, output_dir = ".", backend="multiprocessing"):
     start_time = time.time()
     total_time = start_time
     with Halo(text='initializing', spinner='dots') as spinner:
@@ -450,22 +473,35 @@ def predict_cli(pdb, models, pthreshold=0.1, threshold=7, batch_size=20, mode="f
         
         home = Path.home()
 
-        model.load_state_dict(
-            torch.load(
-                str(home)+constants.model_weights['metal']
+        if int(torch.__version__[0])>1:
+            model.load_state_dict(
+                torch.load(
+                    str(home)+constants.model_weights['metal'], weights_only=True
+                )
             )
-        )
+        else:
+            model.load_state_dict(
+                torch.load(
+                    str(home)+constants.model_weights['metal']
+                )
+            )
         model = nn.DataParallel(model)
 
 
         water_model = WaterModel()
         water_model.to(device)
-
-        water_model.load_state_dict(
-            torch.load(
-                str(home)+constants.model_weights['water']
+        if int(torch.__version__[0])>1:
+            water_model.load_state_dict(
+                torch.load(
+                    str(home)+constants.model_weights['water'], weights_only=True
+                )
             )
-        )
+        else:
+            water_model.load_state_dict(
+                torch.load(
+                    str(home)+constants.model_weights['water']
+                )
+            )
 
         water_model = nn.DataParallel(water_model)
 
@@ -476,12 +512,18 @@ def predict_cli(pdb, models, pthreshold=0.1, threshold=7, batch_size=20, mode="f
         identity_model.to(device)
 
 
-
-        identity_model.load_state_dict(
-            torch.load(
-                str(home)+constants.model_weights['identity']
+        if int(torch.__version__[0])>1:
+            identity_model.load_state_dict(
+                torch.load(
+                    str(home)+constants.model_weights['identity'], weights_only=True
+                )
             )
-        )
+        else:
+            identity_model.load_state_dict(
+                torch.load(
+                    str(home)+constants.model_weights['identity']
+                )
+            )
         
         spinner.succeed(f"models loaded in {time.time() - start_time:.3f} seconds")
         start_time = time.time()
@@ -511,7 +553,8 @@ def predict_cli(pdb, models, pthreshold=0.1, threshold=7, batch_size=20, mode="f
                     threshold=threshold,
                     pthreshold=pthreshold,
                     probefile=probefile,
-                    cubefile=cubefile
+                    cubefile=cubefile,
+                    backend=backend
             )
             # step 3 
             # predict metal identity
@@ -554,7 +597,8 @@ def predict_cli(pdb, models, pthreshold=0.1, threshold=7, batch_size=20, mode="f
                     cubefile=cubefile_water, 
                     mode=mode, 
                     central_residue=central_residue,
-                    radius=radius
+                    radius=radius,
+                    backend=backend
             )
             spinner.succeed(f"Water3D completed in {time.time() - start_time:.3f} seconds")
         else:

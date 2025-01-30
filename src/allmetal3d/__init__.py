@@ -26,6 +26,9 @@ if torch.cuda.is_available()==False:
 
 home = Path.home()
 
+if not os.path.exists(str(home)+constants.weight_path):
+    os.system(f"mkdir -p {constants.weight_path}")
+
 for id, weight in constants.model_weights.items():
     if not os.path.exists(str(home)+weight):
         print(id, "weight doesn't exist, downloading from HF")
