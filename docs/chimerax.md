@@ -17,7 +17,7 @@ To install go too **Tools** &rarr; **More Tools** and search for *AllMetal3D/Wat
 
 ## Run the tool
 
-The application will be available under **Tools** &rarr; **Structure prediction**. 
+The application will be available under **Tools** &rarr; **Structure prediction** or **Tools** &rarr; **Binding Analysis**. 
 
 
 ### Local server only

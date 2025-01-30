@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
-## v0.1.0 (17/10/2024)
+## v0.5.0 (30/1/2025)
 
-- First release of `allmetal3d` as python package!
+- Automatic publishing to PyPi
+- Weight download from HF
+
+
+## v0.4.0 (28/1/2025)
+
+- First public release of `allmetal3d` as python package!
