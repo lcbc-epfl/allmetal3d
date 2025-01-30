@@ -2,6 +2,9 @@
 
 <!--next-version-placeholder-->
 
+## v0.7.0 (30/1/2025)
+- Make weight download more robust
+
 
 ## v0.6.0 (30/1/2025)
 - Fix multiprocessing

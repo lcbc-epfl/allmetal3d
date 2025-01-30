@@ -3,6 +3,8 @@ from importlib.metadata import version
 __version__ = version("allmetal3d")
 
 import os
+import requests
+
 from pathlib import Path
 
 from .utils import constants
@@ -22,18 +24,25 @@ if torch.cuda.is_available()==False:
 # check if weights are downloaded
 
 
-
+def download_file(url, filepath):
+    response = requests.get(url)
+    if response.status_code == 200:
+        with open(filepath, 'wb') as file:
+            file.write(response.content)
+        print(f"Downloaded to {filepath}")
+    else:
+        print(f"Error: HTTP status: {response.status_code}")
 
 home = Path.home()
 
 if not os.path.exists(str(home)+constants.weight_path):
-    os.system(f"mkdir -p {constants.weight_path}")
+    os.system(f"mkdir -p {str(home)+constants.weight_path}")
 
 for id, weight in constants.model_weights.items():
     if not os.path.exists(str(home)+weight):
         print(id, "weight doesn't exist, downloading from HF")
         # download weights from GIT LFS
-        os.system(f"wget -O {str(home)+weight} {constants.download_weights[id]}")
+        download_file(constants.download_weights[id], str(home)+weight)
 
 
 def predict(input_pdb=None, models="all", mode="fast", central_residue="", radius=8, threshold=7, pthreshold=0.25, batch_size=50, output_dir="./") -> tuple[str, str, str, str, dict]:
