@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "allmetal3d"
-version = "0.7.1"
+version = "0.7.3"
 description = "Predicting metal and water binding sites in proteins using 3DCNNs"
 authors = ["Simon Duerr"]
 license = "MIT"
