@@ -4,7 +4,7 @@
 
 We offer a ChimeraX plugin that you can use in ChimeraX on Mac, Windows and Linux. 
 
-It is possible to use it either with our provided inference server using HuggingFace Zero GPU or using a local GPU server of your choice. The prediction endpoint will not need to be located on the same device that you can chimerax. 
+It is possible to use it either with our provided inference server using HuggingFace Zero GPU or using a local GPU server of your choice. The prediction endpoint will not need to be located on the same device that you run ChimeraX. 
 
 
 ![ChimeraX](_static/chimerax_plugin.png)
@@ -13,7 +13,7 @@ It is possible to use it either with our provided inference server using Hugging
 
 The tool is available via the **ChimeraX toolshed**. 
 
-To install go too **Tools** &rarr; **More Tools** and search for *AllMetal3D/Water3D*. 
+To install go too **Tools** &rarr; **More Tools** and search for *AllMetal3D/Water3D*. If you do not install `allmetal3d` using pip (see below) you can only run using the HuggingFace ZeroGPU server with a limit of 5 min of prediction time per day. 
 
 ## Run the tool
 
