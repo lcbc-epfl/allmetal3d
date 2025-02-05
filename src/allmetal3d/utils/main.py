@@ -245,6 +245,7 @@ def predict_identity(model, device, pdb, sites, probefile, spinner=None):
         identity = f"{l_metal[o[0][i].argmax()]} {o[0][i][o[0][i].argmax()]*100:.2f}%"
         geometry = f"{l_geometry[o[1][i].argmax()]} {o[1][i][o[1][i].argmax()]*100:.2f}%"
         identities.append(l_metal[o[0][i].argmax()])
+
         df = pd.concat([df, pd.DataFrame({"Site": [i], "Identity": [identity], "Geometry": [geometry], "Probability": [f"{site[1]*100:.2f} %"]})])
 
     
@@ -253,15 +254,14 @@ def predict_identity(model, device, pdb, sites, probefile, spinner=None):
     if spinner!=None:
         spinner.info("AllMetal3D found the following metals:\n")
     print(tabulate(df, headers='keys', tablefmt='psql'))
-
     results = []
     for i, row in df.iterrows(): 
 
-        close_residues = determine_close_residues(pdb, sites[i][0])
-        res =  {"index":i+1,
+        close_residues = determine_close_residues(pdb, sites[row.Site][0])
+        res =  {"index":row.Site+1,
         "location_confidence": round(float(row["Probability"].replace("%","")),2),
-        "probabilities_identity":[round(x,2) for x in o[0][i].tolist()],
-        "probabilities_geometry":[round(x,2) for x in o[1][i].tolist()],
+        "probabilities_identity":[round(x,2) for x in o[0][row.Site].tolist()],
+        "probabilities_geometry":[round(x,2) for x in o[1][row.Site].tolist()],
         "close_residues":close_residues}
         results.append(res)
     return probe_content, results
